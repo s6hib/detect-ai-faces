@@ -36,7 +36,3 @@ Thumbs.db
 *.log
 *.sqlite
 *.db
-
-# Training artifacts
-training_history.png
-confusion_matrix.png
