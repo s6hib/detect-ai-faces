@@ -2,17 +2,26 @@
 
 This project implements a deep learning model to classify images as either real human faces or AI-generated faces. It uses transfer learning with a pre-trained ResNet-50 model to achieve high accuracy in distinguishing between real and artificial images.
 
+## Data Source
+
+[detect-ai-generated-faces-high-quality-dataset](https://www.kaggle.com/datasets/shahzaibshazoo/detect-ai-generated-faces-high-quality-dataset)
+
 ## Project Structure
 
 ```
 detect-ai-faces/
-├── app/
-│   ├── train.py      # Training script
-│   └── evaluate.py   # Evaluation script
 ├── data/
 │   ├── real/         # Real face images
 │   └── ai/           # AI-generated face images
+├── main/
+│   ├── train.py      # Training script
+│   └── evaluate.py   # Evaluation script
 ├── models/           # Saved model weights
+│   └── face_classifier.pth
+├── notebooks/        # Jupyter notebooks
+├── plots/           # Visualization outputs
+│   ├── confusion_matrix.png
+│   └── training_history.png
 └── requirements.txt  # Project dependencies
 ```
 
@@ -20,7 +29,7 @@ detect-ai-faces/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/detect-ai-faces.git
+git clone https://github.com/s6hib/detect-ai-faces.git
 cd detect-ai-faces
 ```
 
@@ -45,7 +54,7 @@ pip install -r requirements.txt
 To train the model:
 
 ```bash
-python app/train.py
+python main/train.py
 ```
 
 This will:
@@ -59,7 +68,7 @@ This will:
 To evaluate the trained model:
 
 ```bash
-python app/evaluate.py
+python main/evaluate.py
 ```
 
 This will:
@@ -98,11 +107,33 @@ The dataset consists of:
 
 ## Performance
 
-The model's performance metrics will be saved in:
-- `training_history.png`: Training and validation loss/accuracy curves
-- `confusion_matrix.png`: Confusion matrix visualization
-- Console output: Detailed classification report
+The model achieves exceptional performance in distinguishing between real and AI-generated faces:
 
-## License
+### Overall Metrics
+- **Accuracy**: 99.78%
+- **Visualization**: Performance metrics are visualized in:
+  - `training_history.png`: Training and validation loss/accuracy curves
+  - `confusion_matrix.png`: Confusion matrix visualization
 
-[Your chosen license]
+### Detailed Classification Report
+```
+              precision    recall  f1-score   support
+
+        Real       1.00      1.00      1.00      2202
+AI-Generated       1.00      0.99      1.00      1001
+
+    accuracy                           1.00      3203
+   macro avg       1.00      1.00      1.00      3203
+weighted avg       1.00      1.00      1.00      3203
+```
+
+### Key Insights
+- Perfect precision (1.00) for both real and AI-generated face detection
+- Near-perfect recall, with AI-generated faces having a slightly lower recall (0.99)
+- Balanced performance across classes despite uneven support (2202 real vs 1001 AI-generated samples)
+
+### Edge Cases
+The model occasionally makes high-confidence mistakes:
+- Example: AI-Generated face misclassified as Real with 99.96% confidence
+
+This suggests that while the model's overall performance is exceptional, there are still some AI-generated images that can be incredibly convincing, even to our highly accurate classifier.
