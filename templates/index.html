@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Face Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 40px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        #drop-zone.dragover {
+            border-color: #666;
+            background-color: #f9f9f9;
+        }
+        #file-input {
+            display: none;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        .result-real {
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            color: #3c763d;
+        }
+        .result-ai {
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+            color: #a94442;
+        }
+        #preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 20px auto;
+            display: none;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading:after {
+            content: "...";
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60% { content: "..."; }
+            80% { content: "...."; }
+            100% { content: "....."; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Face Detector</h1>
+        <div class="upload-section">
+            <div id="drop-zone">
+                Drag and drop an image here or click to select
+                <input type="file" id="file-input" accept="image/*">
+            </div>
+            <img id="preview" alt="Preview">
+            <button id="upload-button" class="button" disabled>Analyze Image</button>
+            <div class="loading">Analyzing image</div>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const uploadButton = document.getElementById('upload-button');
+        const preview = document.getElementById('preview');
+        const result = document.getElementById('result');
+        const loading = document.querySelector('.loading');
+
+        // Drag and drop handlers
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            const file = files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    uploadButton.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        uploadButton.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Show loading state
+            uploadButton.disabled = true;
+            loading.style.display = 'block';
+            result.style.display = 'none';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    result.className = '';
+                    result.textContent = `Error: ${data.error}`;
+                } else {
+                    result.className = data.prediction === 'Real' ? 'result-real' : 'result-ai';
+                    result.textContent = `Prediction: ${data.prediction} (${data.confidence.toFixed(2)}% confidence)`;
+                }
+            } catch (error) {
+                result.className = '';
+                result.textContent = 'Error: Failed to analyze image';
+            } finally {
+                // Hide loading state
+                loading.style.display = 'none';
+                result.style.display = 'block';
+                uploadButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
