@@ -1,6 +1,6 @@
 # AI Face Detection Project
 
-This project implements a deep learning model to classify images as either real human faces or AI-generated faces. It uses transfer learning with a pre-trained ResNet-50 model to achieve high accuracy in distinguishing between real and artificial images.
+This project showcases my custom-built deep learning model that classifies images as either real human faces or AI-generated faces. I developed this model using transfer learning with ResNet-50 as a foundation, then extensively customized and trained it to achieve exceptional accuracy in distinguishing between real and artificial images.
 
 ## Data Source
 
@@ -18,7 +18,9 @@ detect-ai-faces/
 │   └── evaluate.py   # Evaluation script
 ├── models/           # Saved model weights
 │   └── face_classifier.pth
-├── notebooks/        # Jupyter notebooks
+├── templates/        # Frontend templates
+│   └── index.html    # Web interface
+├── app.py           # Flask application server
 ├── plots/           # Visualization outputs
 │   ├── confusion_matrix.png
 │   └── training_history.png
@@ -48,6 +50,20 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+
+### Local Frontend
+
+To run the web interface locally:
+
+1. Ensure your virtual environment is activated
+2. Start the Flask development server:
+```bash
+python app.py
+```
+3. Open your browser and navigate to `http://localhost:5000`
+4. Upload any face image to test if it's real or AI-generated
+
+The web interface provides an intuitive way to interact with my model, offering real-time predictions with confidence scores for any uploaded image.
 
 ### Training
 
@@ -137,3 +153,7 @@ The model occasionally makes high-confidence mistakes:
 - Example: AI-Generated face misclassified as Real with 99.96% confidence
 
 This suggests that while the model's overall performance is exceptional, there are still some AI-generated images that can be incredibly convincing, even to our highly accurate classifier.
+
+## Next Steps
+
+The next phase of this project involves deploying the service to make it publicly accessible. This will allow users worldwide to utilize the model for detecting AI-generated faces.
