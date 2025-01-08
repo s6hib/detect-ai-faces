@@ -1,6 +1,6 @@
 # AI Face Detection Project
 
-This project showcases my custom-built deep learning model that classifies images as either real human faces or AI-generated faces. I developed this model using transfer learning with ResNet-50 as a foundation, then extensively customized and trained it to achieve exceptional accuracy in distinguishing between real and artificial images.
+This project showcases a custom-built deep learning model that classifies images as either real human faces or AI-generated faces. I developed this model using transfer learning with [ResNet-50](https://blog.roboflow.com/what-is-resnet-50/) as a foundation, then extensively customized and trained it to achieve exceptional accuracy in distinguishing between real and artificial images.
 
 ## Data Source
 
