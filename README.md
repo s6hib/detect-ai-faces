@@ -156,4 +156,4 @@ This suggests that while the model's overall performance is exceptional, there a
 
 ## Next Steps
 
-The next phase of this project involves deploying the service to make it publicly accessible. This will allow users worldwide to utilize the model for detecting AI-generated faces.
+The next phase of this project would be deploying the service to make it publicly accessible.
